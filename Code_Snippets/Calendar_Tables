@@ -1,0 +1,27 @@
+dCalendar = 
+
+VAR MinYear =
+    YEAR ( MIN ( 'fSales - Header'[Invoice Date] ) )
+    
+VAR MaxYear =
+    YEAR ( MAX ( 'fSales - Header'[Invoice Date] ) )
+
+RETURN
+    ADDCOLUMNS (
+        FILTER (
+            CALENDARAUTO (),
+            YEAR ( [Date] ) >= MinYear
+                && YEAR ( [Date] ) <= MaxYear
+        ),
+        "Year", YEAR([Date] ),
+        "Year-Month", YEAR([Date] ) & "-" & FORMAT( MONTH ([Date]), "00"),
+        "Quarter Number", INT(FORMAT ( [Date], "q" ) ),
+        "Quarter", "Q" & INT(FORMAT ( [Date], "q" ) ),
+        "Month Number", MONTH([Date] ),
+        "Month Short", FORMAT ([Date], "mmm" ),
+        "Semester", "S" & INT(IF(MONTH([Date]) >= 7, "2", "1")),
+        "Week Number", WEEKNUM ( [Date] ),
+        "Week Day Number", WEEKDAY ( [Date], 2 ),
+        "Week Day Name", FORMAT ( [Date], "dddd" ),
+        "Weekend", IF ( WEEKDAY ( [Date], 2 ) IN { 6, 7 }, "Y", "N" )
+    )

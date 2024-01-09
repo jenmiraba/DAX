@@ -1,0 +1,37 @@
+SVG Barra Progreso = 
+VAR MAXActual = [Tasa de Conversión]
+
+VAR MAXTarget = 0.1
+
+VAR RangoEje = 
+MAXX(
+    {
+        MAXActual,
+        MAXTarget
+    },
+    [Value]
+)
+
+VAR RellenoPct = MAXActual / RangoEje * 100
+VAR RellenoPctFormatted = SUBSTITUTE(ROUND(RellenoPct, 2), ",", ".")
+
+VAR RellenoPctTarget = MAXTarget / RangoEje * 100
+
+VAR svg = "data:image/svg+xml;utf8," &
+    "<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' overflow='visible'>
+        <rect id='track' x='0' y='3' width='110' height='18' fill='#e4e1fa'/> 
+        <rect id='fill' x='0' y='7' width="& "'"& RellenoPctFormatted &"'"&" height='10' fill='#877FBA'></rect>
+        <rect id='marker' x="&"'"& RellenoPctTarget &"'"&" y='2' width='2' height='20' fill='#7e13b0'></rect>
+    </svg>"
+
+VAR Medida =
+IF(
+    ISFILTERED('dCampaña'[ID Campaña]) = FALSE(),
+    BLANK(), 
+    svg
+)
+
+RETURN
+Medida
+
+// source = https://kerrykolosko.com/portfolio/progress-bars/

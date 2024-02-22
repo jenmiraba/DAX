@@ -1,0 +1,105 @@
+
+
+# Dynamic Filter Count Using DAX in Power BI
+
+## Problem Description
+In complex Power BI reports, understanding the extent of applied filters dynamically can significantly enhance user interaction and data analysis. Often, report viewers need clarity on which dimensions are currently affecting the displayed data, especially in dashboards with multiple filtering options.
+
+![Alternate image text](https://i.imgur.com/wAxP54X.gif)
+
+## Purpose
+The purpose of this DAX formula is to provide a dynamic count of the number of filters applied across specific report dimensions. This count helps users to quickly ascertain how many and which filters are influencing the report data, improving data exploration and interaction within Power BI.
+
+### DAX Code - Example
+
+The following DAX code is tailored for a scenario involving three specific dimensions: Year, Task Type, and Task Status. It calculates the number of active filters applied to these dimensions.
+
+```
+Count Applied Filters = 
+VAR Year =
+IF(
+    ISFILTERED(dCalendar[Year]),
+    1,
+    0
+)
+
+VAR TaskType =
+IF(
+    ISFILTERED(dTaskType[Type]),
+    1,
+    0
+)
+
+VAR TaskStatus =
+IF(
+    ISFILTERED(dTaskStatus[Task Status]),
+    1,
+    0
+)
+
+VAR SelectedFilters =
+{
+    Year,
+    TaskType,
+    TaskStatus
+}
+
+VAR Result =
+SUMX(SelectedFilters, [Value])
+
+RETURN
+FORMAT(Result, "0")
+
+```
+
+### DAX Code - Generic Case
+
+```
+
+DynamicFilterCount = 
+
+// Declare a variable for all dimension/columns use for filtering. 
+VAR Column1 =
+IF(
+    ISFILTERED(YourTable1[YourColumn1]), // Checks if YourColumn1 in YourTable1 is filtered.
+    1, // If filtered, set to 1.
+    0  // If not filtered, set to 0.
+)
+
+VAR Column2 =
+IF(
+    ISFILTERED(YourTable2[YourColumn2]),
+    1, 
+    0  
+)
+
+VAR Column3 =
+IF(
+    ISFILTERED(YourTable3[YourColumn3]),
+    1, 
+    0  
+)
+
+// Combine the results of the filter checks
+VAR SelectedFiltersList =
+{
+    Column1,
+    Column2,
+    Column3
+}
+
+// Calculate the sum of the values in the list to get the total number of active filters.
+VAR Result =
+SUMX(SelectedFiltersList, [Value])
+
+// Return the result formatted as a whole number
+RETURN
+FORMAT(Result, "0")
+
+```
+
+## Notes
+
+This is a basic example. It can be extended to include more columns and custom logic.
+
+
